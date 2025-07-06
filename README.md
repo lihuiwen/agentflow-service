@@ -47,6 +47,8 @@ pnpm start:dev
 pnpm start:debug
 ```
 
+- 启动后访问 http://localhost:3000/api-docs 查看 API 文档
+
 ### 测试
 
 ```bash
