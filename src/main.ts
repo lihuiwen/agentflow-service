@@ -19,6 +19,12 @@ async function bootstrap() {
     }),
   );
 
+  app.enableCors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
+
   // 配置 Swagger API 文档
   if (process.env.NODE_ENV !== 'production') {
     const { DocumentBuilder, SwaggerModule } = await import('@nestjs/swagger');
@@ -36,7 +42,9 @@ async function bootstrap() {
     SwaggerModule.setup('api-docs', app as any, document);
   }
 
-  await app.listen(process.env.PORT ?? 3000);
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port);
+  console.log(`Application is running on: http://localhost:${port}`);
 }
 
 bootstrap().catch((error) => console.error(error));
