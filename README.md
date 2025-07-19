@@ -108,3 +108,19 @@ src/
 - Swagger (API 文档)
 - TypeScript
 - ESLint + Prettier (代码规范)
+
+## 更新记录
+
+### 2025-07-19
+
+1. 更新数据库表
+
+- jobs 表添加 minBudget 字段
+- agents 表添加 price 和 isFree两个字段
+- 添加 execution_logs 任务执行日志表
+- 添加 agent_performance Agent性能统计表
+- 后端服务添加允许跨域访问功能
+
+```bash
+npx prisma db push
+```
