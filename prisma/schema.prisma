@@ -38,6 +38,8 @@ model Agent {
   reputation          Float    @default(0.0) // 信誉评分
   successRate         Float    @default(0.0) // 成功率
   totalJobsCompleted  Int      @default(0)
+  price               Float    @default(0.0) // Agent价格
+  isFree              Boolean  @default(false) // 是否免费
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
@@ -79,6 +81,7 @@ model Job {
   description  String // 对应前端 description
   deliverables String // 对应前端 deliverables
   budget       Json // 对应前端 budget (number 或 {min, max})
+  minBudget    Float? // 对应前端 minBudget
   maxBudget    Float? // 对应前端 maxBudget
   deadline     DateTime // 对应前端 deadline
   paymentType  String // 对应前端 paymentType
@@ -160,4 +163,30 @@ model JobDistributionAgent {
   // 确保同一个分发记录不会重复分配给同一个Agent
   @@unique([jobDistributionId, agentId])
   @@map("job_distribution_agents")
+}
+
+// 任务执行日志表
+model ExecutionLog {
+  id        String   @id @default(cuid())
+  jobId     String
+  agentId   String  
+  eventType String   // 'ASSIGNED', 'STARTED', 'PROGRESS', 'COMPLETED', 'FAILED'
+  eventData Json?
+  createdAt DateTime @default(now())
+  
+  @@map("execution_logs")
+}
+
+// Agent性能统计表
+model AgentPerformance {
+  id               String   @id @default(cuid())
+  agentId          String   @unique
+  totalJobs        Int      @default(0)
+  completedJobs    Int      @default(0)
+  failedJobs       Int      @default(0)
+  avgExecutionTime Float    @default(0)
+  successRate      Float    @default(0)
+  lastUpdated      DateTime @default(now()) @updatedAt
+  
+  @@map("agent_performance")
 }

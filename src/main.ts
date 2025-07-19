@@ -19,6 +19,12 @@ async function bootstrap() {
     }),
   );
 
+  app.enableCors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
+
   // 配置 Swagger API 文档
   if (process.env.NODE_ENV !== 'production') {
     const { DocumentBuilder, SwaggerModule } = await import('@nestjs/swagger');
