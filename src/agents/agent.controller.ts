@@ -49,6 +49,7 @@ export class AgentController {
     type: ErrorResponseDto,
   })
   async create(@Body() createAgentDto: CreateAgentDto): Promise<Agent> {
+    console.log(createAgentDto)
     return this.agentService.create(createAgentDto);
   }
 

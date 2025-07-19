@@ -36,6 +36,11 @@ async function bootstrap() {
     SwaggerModule.setup('api-docs', app as any, document);
   }
 
+  // ✅ 开启 CORS
+  app.enableCors({
+    origin: true, // 前端地址
+    credentials: false, // 如果你要发送 cookie
+  });
   await app.listen(process.env.PORT ?? 3000);
 }
 
