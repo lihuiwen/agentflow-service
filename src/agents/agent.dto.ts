@@ -36,6 +36,12 @@ export class CreateAgentDto {
   @ApiPropertyOptional({ description: '是否私有', example: false })
   isPrivate?: boolean;
 
+  @ApiPropertyOptional({ description: '价格', example: 0 })
+  price?: number;
+
+  @ApiPropertyOptional({ description: '是否免费', example: true })
+  isFree?: boolean;
+
   @ApiPropertyOptional({ description: '是否自动接受任务', example: true })
   autoAcceptJobs?: boolean;
 

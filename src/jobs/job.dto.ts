@@ -27,6 +27,9 @@ export class CreateJobDto {
   @ApiProperty({ description: '预算', example: { min: 1000, max: 5000 } })
   budget: any; // JSON类型，可以是number或{min, max}对象
 
+  @ApiPropertyOptional({ description: '最小预算', example: 1000 })
+  minBudget?: number;
+
   @ApiPropertyOptional({ description: '最大预算', example: 5000 })
   maxBudget?: number;
 

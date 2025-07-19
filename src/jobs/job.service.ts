@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { GlobalQueueManager } from '../queue/global-queue.manager';
 import {
   CreateJobDto,
   UpdateJobDto,
@@ -11,18 +12,46 @@ import { Job, JobStatus } from '@prisma/client';
 
 @Injectable()
 export class JobService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly queueManager: GlobalQueueManager,
+  ) {}
 
   /**
    * 创建新Job
    */
   async create(createJobDto: CreateJobDto): Promise<Job> {
-    return this.prisma.job.create({
+    // 创建Job记录
+    const job = await this.prisma.job.create({
       data: {
         ...createJobDto,
         deadline: new Date(createJobDto.deadline),
       },
     });
+
+    // 发送Job创建消息到队列
+    try {
+      this.queueManager.sendJobMessage({
+        type: 'JOB_CREATED',
+        jobId: job.id,
+        jobTitle: job.jobTitle,
+        category: job.category,
+        priority: job.priority,
+        status: job.status,
+        deadline: job.deadline.toISOString(),
+        createdAt: job.createdAt.toISOString(),
+        budget: job.budget,
+        paymentType: job.paymentType,
+        skillLevel: job.skillLevel,
+      });
+
+      console.log(`Job创建消息已发送到队列: Job ID ${job.id}`);
+    } catch (error) {
+      console.error(`发送Job队列消息失败: Job ID ${job.id}`, error);
+      // 不抛出错误，避免影响Job创建的主要流程
+    }
+
+    return job;
   }
 
   /**
