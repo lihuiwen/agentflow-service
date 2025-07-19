@@ -23,7 +23,7 @@ export class UpdateCategoryDto {
 export class PaginationDto {
   @ApiPropertyOptional({ description: '页码', example: 1, minimum: 1 })
   @Type(() => Number)
-  page?: number = 1;
+  page?: number;
 
   @ApiPropertyOptional({
     description: '每页数量',
@@ -32,7 +32,7 @@ export class PaginationDto {
     maximum: 100,
   })
   @Type(() => Number)
-  limit?: number = 10;
+  limit?: number;
 }
 
 /**
