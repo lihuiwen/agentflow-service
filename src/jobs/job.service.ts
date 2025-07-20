@@ -156,12 +156,39 @@ export class JobService {
       updateData.deadline = new Date(updateJobDto.deadline);
     }
 
-    return this.prisma.job.update({
-      where: { id },
-      data: {
-        ...updateData,
-        updatedAt: new Date(),
-      },
+    // 处理JobDistributionRecord的更新
+    const { assignedAgentId, assignedAgentName, ...jobUpdateData } = updateData;
+    
+    return this.prisma.$transaction(async (prisma) => {
+      // 更新Job基本信息
+      const updatedJob = await prisma.job.update({
+        where: { id },
+        data: {
+          ...jobUpdateData,
+          updatedAt: new Date(),
+        },
+      });
+
+      // 如果需要更新JobDistributionRecord的assignedAgent信息
+      if (assignedAgentId !== undefined || assignedAgentName !== undefined) {
+        // 检查是否存在JobDistributionRecord
+        const existingDistribution = await prisma.jobDistributionRecord.findUnique({
+          where: { jobId: id },
+        });
+
+        if (existingDistribution) {
+          // 更新现有的JobDistributionRecord
+          await prisma.jobDistributionRecord.update({
+            where: { jobId: id },
+            data: {
+              ...(assignedAgentId !== undefined && { assignedAgentId }),
+              ...(assignedAgentName !== undefined && { assignedAgentName }),
+            },
+          });
+        }
+      }
+
+      return updatedJob;
     });
   }
 
