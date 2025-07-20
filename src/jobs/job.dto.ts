@@ -141,6 +141,18 @@ export class UpdateJobDto {
 
   @ApiPropertyOptional({ description: '是否公开', example: true })
   isPublic?: boolean;
+
+  @ApiPropertyOptional({ 
+    description: '最终选中的Agent ID', 
+    example: 'agent_001' 
+  })
+  assignedAgentId?: string;
+
+  @ApiPropertyOptional({ 
+    description: '最终选中的Agent名称', 
+    example: 'AI Assistant' 
+  })
+  assignedAgentName?: string;
 }
 
 /**
